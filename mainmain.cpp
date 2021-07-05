@@ -39,7 +39,8 @@ int main(){
     cout<<"Input your string: ";
     getline(cin,str);
     buildHuffmanTree(str);
-    //getchar();
+    cout<<"Press enter to quit";
+    getchar();
 }   
 
 void encode(Node* root, string str, unordered_map<char,string>&huffmanCode){
@@ -131,6 +132,6 @@ void buildHuffmanTree(string str){
     cout<<"\nDecoded string is: \n";
     while(index < (int)code.size() - 1){
         decode(root,index,code);
-    }
+    }   cout<<'\n'<<'\n';
     
 }
