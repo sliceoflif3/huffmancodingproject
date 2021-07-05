@@ -39,6 +39,7 @@ int main(){
     cout<<"Input your string: ";
     getline(cin,str);
     buildHuffmanTree(str);
+    //getchar();
 }   
 
 void encode(Node* root, string str, unordered_map<char,string>&huffmanCode){
@@ -46,7 +47,8 @@ void encode(Node* root, string str, unordered_map<char,string>&huffmanCode){
 
     //leaf node
     if(!root->left && !root->right){
-        huffmanCode[root->ch] = str;
+        if(root->ch!='\0')                      //doesnt assign a code for dummy node
+            huffmanCode[root->ch] = str;
     }
 
     //di trai = 0, di phai = 1
@@ -80,12 +82,15 @@ void buildHuffmanTree(string str){
 
     //priority queue to store nodes of the huffman tree
     priority_queue<Node*,vector<Node*>,comp> pq;
-
+    
     //create a node for each character and push in the priority queue by increasing freq order
     for(auto pair: freq){
         pq.push(newNode(pair.first,pair.second,nullptr,nullptr));
     }
-
+    //only 1 character so add a dummy node with char '\0' with 0 freq to be able to create a tree
+    if(pq.size()==1){
+        pq.push(newNode('\0',0,nullptr,nullptr));
+    }
     //combines 2 minimum nodes until there are only 1 nodes left
     while(pq.size()!=1){
         
@@ -127,4 +132,5 @@ void buildHuffmanTree(string str){
     while(index < (int)code.size() - 1){
         decode(root,index,code);
     }
+    
 }
