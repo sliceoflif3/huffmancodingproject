@@ -1,0 +1,312 @@
+When you put English text into a computer,
+
+it is saving every individual character as
+eight bits of data.
+
+Eight ones and zeros.
+
+And yes, a modern phone or computer might
+store a few quadrillion of them(!)
+
+But every time you've had to wait a long time
+for a download,
+
+or your phone's complained
+that its storage is full,
+
+you're running up against the same question
+that computer scientists have been working on
+
+since before these things here
+were state of the art:
+
+can we please not use so many bits?
+
+So, let’s run through
+how computers compress text.
+
+Images and video are different —
+that's lossy compression,
+
+where it doesn't matter if you lose
+a little bit of detail.
+
+But text has to be losslessly compressed:
+
+you can't just lose a bit of detail,
+
+otherwise you end up sending the wrong worms.
+
+So the first thing we need to know
+
+is how text is stored on disk before it's
+compressed.
+
+To make this easier,
+
+I am just going to talk about
+English text here:
+
+I know only too well that it gets
+more complicated than this,
+
+but hey, the series is called "the basics",
+so deal with it.
+
+On a modern computer,
+each English character takes up
+
+exactly eight ones and zeros on disk -
+eight bits, or one byte.
+
+And there are 256 possible combinations of
+those ones and zeros,
+
+so you can have 256 possible characters.
+
+That's enough for the English alphabet, numbers,
+some punctuation, and...
+
+
+If you want to know how long
+a string of text is,
+
+you just count the bits
+and you divide by eight.
+
+Computers don't have the luxury of spaces,
+remember:
+
+it's just one long string of 1s and 0s.
+
+But let's say we're not worried about speed
+right now,
+
+we just want to fit as much text as possible
+
+into as small a number of 1s and 0s as possible.
+
+Compression.
+
+A good plan would be to assign
+the most common characters
+
+to smaller arrangements of bits.
+
+So those researchers, way way back,
+could have said:
+
+well, the space bar is generally
+used most often.
+
+Just give that the code "0".
+
+Then it's the lowercase e.
+Give that the code "1".
+
+Then it's lowercase t: give that two zeros...
+
+...and immediately, we've hit a problem.
+
+Because the computer running through that text later
+has no way of knowing
+
+whether "00" is a t, or the space bar twice.
+
+And if we keep on assigning letters like that,
+
+the problems keep getting worse:
+
+is three zeros a lowercase n?
+
+Or a t followed by a space? Or three spaces?
+
+Remember, there are no gaps here, no actual
+space separators,
+
+all the computer can see is a constant stream
+of 1s and 0s.
+
+There's no way to know which is meant.
+
+Except. In 1952, a very clever mathematician
+called David Huffman invented Huffman coding.
+
+You invent something like that,
+your name gets put on it.
+
+Yes, there are much better,
+
+more modern, more complicated,
+mathematical ways to do this,
+
+but Huffman coding is the basic foundation
+of modern text compression.
+
+And here is how it works.
+
+Let's say we want to compress...
+
+let's go with the lyrics to
+Will Smith's "Wild Wild West".
+
+Uncompressed, that is 3,684 characters
+taking up nearly 30,000 bits.
+
+First up: you count how many times
+each character is used,
+
+and you put that in a list in order.
+
+Now that'll be different for each block of
+text you're compressing:
+
+this has way more Ws than usual.
+
+Now take the two least used characters.
+
+Those two are going to be the bottom branches
+on your “Huffman tree”.
+
+Write them down, with how often they're used
+next to them.
+
+That’s called their frequency.
+
+Then connect them together, one level up,
+with the sum of their frequencies.
+
+Now add that new sum back into your list,
+
+wherever it sits, higher up.
+
+And repeat!
+
+Take the bottom two off your list,
+connect them up,
+
+add the result back in your list.
+
+Keep that going.
+
+And when one of the sums reaches the bottom
+two of the list,
+
+you connect it up like that.
+
+And eventually, you're going to be down to
+one thing in your list,
+
+right at the top.
+
+You now have a Huffman tree,
+and it looks like this,
+
+and it tells you how to convert your text
+into ones and zeros.
+
+Our first letter is the first uppercase W
+in 'wiki-wiki-wild-wild-West'.
+
+Uppercase W is here, there’s 141 of them.
+
+So go the top, follow the path down.
+
+Each time you take the left hand side, write
+a 0;
+
+each time you take the right hand side, write
+a 1.
+
+So W is this: only 5 bits instead of 8.
+
+Next, lowercase i.
+
+Follow the code down, only four bits
+this time, it’s more common.
+
+Then the k, which is less common; that actually
+takes up seven bits.
+
+And you keep going.
+
+Some of the letters will take up more than
+8 bits,
+
+but that’s fine, because they’re not used
+very often.
+
+Now, you do have to also store this tree to
+provide a translation table
+
+between your new symbols
+and the uncompressed ones -
+
+so this is not efficient for
+short bits of text.
+
+If you’re ever asked to do this
+in a computer science exam,
+
+then they’ll ignore all that
+and just ask you
+
+to do one easy word from a tree by hand.
+
+But for Will Smith's magnum opus,
+we have compressed it down
+
+to just over 20,000 bits: about a 30% saving.
+
+To uncompress the resulting stream of bits,
+it works the other way:
+
+just read across, take the left fork every
+time you see a 0
+
+and the right fork every time you see a 1.
+
+When you reach a letter, that's it, you know
+that’s the end,
+
+and you know that there is no other path you
+could have possibly taken.
+
+You start again with the next bit.
+
+Now in practice, computers might do this working
+backwards from the bottom up sometimes,
+
+but this is a pretty good way to at least
+understand what's going on.
+
+And here's the really clever part:
+
+Huffman proved that this is
+the most efficient way
+
+to assign 0s and 1s to single characters.
+
+It is mathematically impossible to beat this.
+
+Unless, as you might already
+have figured out,
+
+you start working on blocks
+bigger than one character.
+
+Clever tricks like that are basically how
+zip files work...
+
+but then, this is just the basics.
+
+Thank you to all my proofreaders who helped
+with that script,
+
+thank you to my graphics team,
+
+and also thank you to the
+Centre for Computing History in Cambridge
+
+for letting me film with their old kit.
+
